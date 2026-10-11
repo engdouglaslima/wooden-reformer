@@ -183,6 +183,22 @@ loader.load('./reformer.glb',gltf=>{
      const a=[sz.x,sz.y,sz.z].sort((x,y)=>x-y);
      if(a[0]>35&&a[0]<65&&a[1]>720&&a[1]<830&&a[2]>720&&a[2]<850){kind='upholstery';}
    }
+   // Correct CAD appearance labels based on known physical component geometry.
+   // Eight corner-foot solids were tagged dark in STEP but are wooden supports.
+   // The headrest pad was tagged brown but should match the charcoal upholstery.
+   if(g){
+     g.computeBoundingBox();
+     const bb=g.boundingBox, sz=bb.getSize(new THREE.Vector3()), pc=bb.getCenter(new THREE.Vector3());
+     const isFoot=(kind==='rubber' && bb.min.y>=-2 && bb.max.y<=207 &&
+       Math.abs(pc.x)>180 && Math.abs(pc.z)>940 &&
+       sz.x>=25 && sz.y>190 && sz.z>=25);
+     const isHeadPad=(kind==='wood' &&
+       sz.x>=170 && sz.x<=190 && sz.y>=100 && sz.y<=120 &&
+       sz.z>=340 && sz.z<=380 &&
+       Math.abs(pc.x)<15 && pc.z>60 && pc.z<150 && pc.y>430);
+     if(isFoot) kind='wood';
+     if(isHeadPad) kind='upholstery';
+   }
    if(kind==='wood')planarUV(g);
    o.material=materials[kind];
    o.material.transparent=false;o.material.opacity=1;o.material.depthWrite=true;
