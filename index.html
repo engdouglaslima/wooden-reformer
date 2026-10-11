@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f0e9" />
+  <meta name="description" content="Wooden Reformer — visualização 3D interativa a partir do projeto CAD." />
+  <title>Wooden Reformer | Visualizador 3D</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#34332f;background:#f4f0e9}
+    *{box-sizing:border-box}body{margin:0;min-height:100svh}button{font:inherit;cursor:pointer}
+    .app{height:100svh;min-height:590px;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+    header{display:flex;align-items:center;justify-content:space-between;padding:25px clamp(20px,4vw,64px);gap:16px;z-index:2}
+    .brand{display:flex;gap:14px;align-items:center}.monogram{border:1px solid #bdb3a5;width:44px;height:44px;display:grid;place-items:center;letter-spacing:-.08em;font-family:Georgia,serif;font-size:23px;color:#846b50}
+    h1{font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:clamp(21px,2.3vw,30px);letter-spacing:.015em;line-height:1;margin:0}.eyebrow{letter-spacing:.21em;text-transform:uppercase;font-size:10px;color:#827c72;margin-top:8px}
+    .top-label{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#8b8175}.stage{position:relative;min-height:0;overflow:hidden}
+    #viewport{height:100%;width:100%;outline:none;touch-action:none}canvas{display:block}.stage:after{content:'';position:absolute;inset:auto 0 0;height:80px;pointer-events:none;background:linear-gradient(transparent,#f4f0e9)}
+    .hint{position:absolute;left:clamp(20px,4vw,64px);bottom:25px;z-index:1;color:#776e64;display:flex;align-items:center;gap:8px;font-size:12px;pointer-events:none}
+    .hint svg{width:17px;height:17px}.loading{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:#f4f0e9;transition:opacity .4s}.loading.hide{opacity:0;pointer-events:none}.loader{text-align:center;max-width:85vw}.loader span{font-family:Georgia,serif;font-size:23px}.track{margin-top:21px;width:240px;max-width:75vw;height:2px;background:#ddd5c9}.track div{height:100%;width:0;background:#9e8062;transition:width .2s}.status{font-size:12px;margin-top:14px;color:#83796c}
+    .error{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;z-index:6;padding:25px;text-align:center;background:#f4f0e9;color:#594c3e}.error strong{font-size:18px}.error p{max-width:520px;font-size:13px;line-height:1.6}
+    footer{z-index:2;border-top:1px solid #ded7cd;padding:19px clamp(20px,4vw,64px) 23px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:17px}
+    .controls{display:flex;flex-wrap:wrap;align-items:center;gap:7px}.control{border:1px solid #cfc6bb;background:transparent;color:#65594b;padding:10px 14px;border-radius:5px;font-size:12px;transition:.2s}.control:hover,.control[aria-pressed="true"]{background:#514a42;color:white;border-color:#514a42}.control:focus-visible{outline:2px solid #826447;outline-offset:2px}
+    .meta{font-size:11px;color:#948a7f;letter-spacing:.045em}.note{position:absolute;right:clamp(20px,4vw,64px);top:24px;color:#a49a8e;font-size:11px;letter-spacing:.04em}
+    @media(max-width:700px){.app{min-height:610px}header{padding-top:19px;padding-bottom:14px}.top-label{display:none}.hint{bottom:15px}.note{top:8px;font-size:10px}footer{padding-top:14px;padding-bottom:20px}.control{padding:9px 11px}.meta{width:100%}}
+  </style>
+  <script type="importmap">
+  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"}}
+  </script>
+</head>
+<body>
+<main class="app">
+  <header>
+    <div class="brand"><div class="monogram" aria-hidden="true">W</div><div><h1>Wooden Reformer</h1><div class="eyebrow">Design · Movimento · Precisão</div></div></div>
+    <div class="top-label">Exploração 3D interativa</div>
+  </header>
+  <section class="stage" aria-label="Visualização interativa do equipamento em 3D">
+    <div id="viewport" tabindex="0" aria-label="Use o mouse ou toque para girar e aproximar o modelo"></div>
+    <div class="note">MODELO DERIVADO DO CAD</div>
+    <div class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M2 12h20M8 5l4-3 4 3M8 19l4 3 4-3M5 8l-3 4 3 4M19 8l3 4-3 4"/></svg>Arraste para girar · Role ou pince para zoom</div>
+    <div class="loading" id="loading" role="status"><div class="loader"><span>Preparando visualização 3D</span><div class="track"><div id="progress"></div></div><p class="status" id="status">Carregando geometria...</p></div></div>
+    <div class="error" id="error"><strong>Não foi possível abrir o modelo</strong><p>Confira se o arquivo <code>reformer.glb</code> está na mesma pasta do <code>index.html</code> e se o site está sendo acessado por HTTPS ou por um servidor local, não por <code>file://</code>.</p></div>
+  </section>
+  <footer>
+    <div class="controls" aria-label="Controles de visualização">
+      <button class="control" data-view="iso" aria-pressed="true">Perspectiva</button>
+      <button class="control" data-view="side" aria-pressed="false">Lateral</button>
+      <button class="control" data-view="top" aria-pressed="false">Superior</button>
+      <button class="control" data-view="front" aria-pressed="false">Frontal</button>
+      <button class="control" id="reset" title="Retornar à vista inicial">Restaurar</button>
+      <button class="control" id="fullscreen" title="Abrir tela cheia">Tela cheia</button>
+    </div>
+    <div class="meta">PROJETO DE EQUIPAMENTO · VISUALIZAÇÃO CONCEITUAL DE MATERIAIS</div>
+  </footer>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const viewport=document.getElementById('viewport');
+const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f0e9');
+const camera=new THREE.PerspectiveCamera(36,1,.01,100000);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.65;
+viewport.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0xb6a697,2.7));
+function light(x,y,z,power,size){const l=new THREE.DirectionalLight('#ffffff',power);l.position.set(x,y,z);scene.add(l)}
+light(3,8,6,2.2);light(-5,3,-4,1.1);light(0,5,-6,.65);
+let center=new THREE.Vector3(),radius=1,axes={};let model;
+const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
+new ResizeObserver(resize).observe(viewport);resize();
+const views={iso:[1.55,.88,1.85],side:[2.5,.55,0],top:[0,2.5,.0001],front:[0,.55,2.5]};
+function setView(view='iso'){
+ const dir=new THREE.Vector3(...views[view]).normalize();
+ const distance=radius/(Math.sin(THREE.MathUtils.degToRad(camera.fov/2)))*1.30;
+ camera.position.copy(center).addScaledVector(dir,distance);
+ camera.up.set(0,1,0);camera.lookAt(center);controls.target.copy(center);controls.update();
+ document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));
+}
+function done(){document.getElementById('loading').classList.add('hide');setTimeout(()=>document.getElementById('loading').remove(),450)}
+const loader=new GLTFLoader();
+loader.load('./reformer.glb',gltf=>{
+ model=gltf.scene;scene.add(model);
+ const box=new THREE.Box3().setFromObject(model);
+ if(box.isEmpty())throw new Error('Modelo sem geometria');
+ const originalSize=box.getSize(new THREE.Vector3());
+ const scale=3/Math.max(originalSize.x,originalSize.y,originalSize.z);
+ model.scale.setScalar(scale);model.updateMatrixWorld(true);
+ // Assentamento no centro da cena sem modificar o aspecto original do conjunto.
+ const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());model.position.sub(c);
+ model.updateMatrixWorld(true);
+ const b3=new THREE.Box3().setFromObject(model);b3.getCenter(center);radius=b3.getBoundingSphere(new THREE.Sphere()).radius;
+ model.traverse(o=>{if(o.isMesh){o.material.side=THREE.DoubleSide;o.material.roughness=.78;o.material.metalness=.08;}});
+ controls.minDistance=radius*.65;controls.maxDistance=radius*8;
+ setView('iso');done();
+},event=>{if(event.total){const pct=Math.min(100,Math.round(100*event.loaded/event.total));document.getElementById('progress').style.width=pct+'%';document.getElementById('status').textContent=pct+'% carregado';}},e=>{console.error(e);document.getElementById('loading').style.display='none';document.getElementById('error').style.display='flex';});
+for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));
+document.getElementById('reset').addEventListener('click',()=>{controls.reset();setView('iso')});
+document.getElementById('fullscreen').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+</script>
+</body>
+</html>
