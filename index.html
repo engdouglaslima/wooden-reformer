@@ -63,12 +63,13 @@ const viewport=document.getElementById('viewport');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f0e9');
 const camera=new THREE.PerspectiveCamera(36,1,.01,100000);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NeutralToneMapping;renderer.toneMappingExposure=1.0;
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.96;
 viewport.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;controls.zoomSpeed=.8;
-scene.add(new THREE.HemisphereLight(0xffffff,0xc7bfb3,1.45));
-function light(x,y,z,power,size){const l=new THREE.DirectionalLight('#ffffff',power);l.position.set(x,y,z);scene.add(l)}
-light(3,8,6,1.8);light(-5,3,-4,.65);light(0,5,-6,.45);
+scene.add(new THREE.AmbientLight(0xffffff,1.15));
+scene.add(new THREE.HemisphereLight(0xffffff,0xd8d0c4,0.55));
+function light(x,y,z,power){const l=new THREE.DirectionalLight('#fffaf2',power);l.position.set(x,y,z);scene.add(l)}
+light(5,9,7,1.65);light(-5,4,-3,0.45);light(0,6,-8,0.25);
 let center=new THREE.Vector3(),radius=1,axes={};let model;let activeView="iso";let userAdjustedCamera=false;
 const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
 new ResizeObserver(()=>{resize();if(model&&!userAdjustedCamera)setView(activeView)}).observe(viewport);resize();
@@ -110,33 +111,57 @@ loader.load('./reformer.glb',gltf=>{
  const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());model.position.sub(c);
  model.updateMatrixWorld(true);
  modelBox.setFromObject(model);modelBox.getCenter(center);radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
- // STEP-derived GLB contains vertex colors encoded as 8-bit sRGB values.
- // glTF expects LINEAR vertex colors, so decode them once before illumination.
- // Without this conversion brown wood and dark upholstery appear washed out.
- const decodeColor=v=>{const s=v/255;return Math.round(255*(s<=0.04045?s/12.92:Math.pow((s+0.055)/1.055,2.4)));};
- const colorLUT=Uint8Array.from({length:256},(_,i)=>decodeColor(i));
- const processed=new Set();
+ // The CAD-derived GLB stores only four flat vertex-color groups.
+ // Instead of trying to preserve raw CAD colors, map each dominant color
+ // to a more realistic product material while preserving the geometry.
+ const palette=[
+  {name:'hardware', rgb:[153,158,157], material:()=>new THREE.MeshStandardMaterial({color:'#b5b8b7', roughness:0.42, metalness:0.78})},
+  {name:'upholstery', rgb:[101,105,103], material:()=>new THREE.MeshStandardMaterial({color:'#4e5251', roughness:0.94, metalness:0.02})},
+  {name:'wood', rgb:[184,137,85], material:()=>new THREE.MeshPhysicalMaterial({color:'#b88757', roughness:0.68, metalness:0.0, clearcoat:0.18, clearcoatRoughness:0.72})},
+  {name:'rubber', rgb:[53,56,55], material:()=>new THREE.MeshStandardMaterial({color:'#2f3231', roughness:0.96, metalness:0.0})}
+ ];
+ const cache=new Map();
+ const nearestMaterial=(rgb)=>{
+   let best=palette[0], bestD=Infinity;
+   for(const p of palette){
+     const d=(rgb[0]-p.rgb[0])**2+(rgb[1]-p.rgb[1])**2+(rgb[2]-p.rgb[2])**2;
+     if(d<bestD){bestD=d;best=p;}
+   }
+   if(!cache.has(best.name)) cache.set(best.name,best.material());
+   return cache.get(best.name);
+ };
+ const avgVertexColor=(attr)=>{
+   let r=0,g=0,b=0,n=attr.count;
+   if(attr.array instanceof Uint8Array && attr.normalized){
+     for(let i=0;i<n;i++){const j=i*attr.itemSize; r+=attr.array[j]; g+=attr.array[j+1]; b+=attr.array[j+2];}
+   }else{
+     for(let i=0;i<n;i++){const j=i*attr.itemSize; r+=Math.round(attr.array[j]*255); g+=Math.round(attr.array[j+1]*255); b+=Math.round(attr.array[j+2]*255);}
+   }
+   return [r/n,g/n,b/n];
+ };
  model.traverse(o=>{if(o.isMesh){
   const colors=o.geometry?.getAttribute('color');
-  if(colors && !processed.has(colors)){
-   processed.add(colors);
-   if(colors.array instanceof Uint8Array && colors.normalized){
-    const data=colors.array;
-    for(let i=0;i<colors.count;i++){
-     const j=i*colors.itemSize;
-     data[j]=colorLUT[data[j]];data[j+1]=colorLUT[data[j+1]];data[j+2]=colorLUT[data[j+2]];
-    }
-    colors.needsUpdate=true;
-   }
+  let chosenMat=null;
+  if(colors){
+   chosenMat=nearestMaterial(avgVertexColor(colors));
   }
-
-  const mats=Array.isArray(o.material)?o.material:[o.material];
-  for(const mat of mats){
-   mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.depthTest=true;
-   mat.side=THREE.DoubleSide;
-   if('roughness' in mat)mat.roughness=.78;
-   if('metalness' in mat)mat.metalness=.06;
-   mat.needsUpdate=true;
+  if(chosenMat){
+    o.material=chosenMat;
+  } else {
+    const mats=Array.isArray(o.material)?o.material:[o.material];
+    for(const mat of mats){
+      mat.color?.set('#b88757');
+      if('roughness' in mat) mat.roughness=.75;
+      if('metalness' in mat) mat.metalness=.02;
+      mat.transparent=false; mat.opacity=1; mat.depthWrite=true; mat.depthTest=true;
+      mat.side=THREE.DoubleSide;
+      mat.needsUpdate=true;
+    }
+  }
+  if(Array.isArray(o.material)){
+    o.material.forEach(mat=>{mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.depthTest=true;mat.side=THREE.DoubleSide;mat.needsUpdate=true;});
+  } else if(o.material){
+    o.material.transparent=false;o.material.opacity=1;o.material.depthWrite=true;o.material.depthTest=true;o.material.side=THREE.DoubleSide;o.material.needsUpdate=true;
   }
  }});
  setView('iso');done();
