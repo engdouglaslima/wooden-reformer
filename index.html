@@ -70,11 +70,35 @@ let center=new THREE.Vector3(),radius=1,axes={};let model;
 const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
 new ResizeObserver(resize).observe(viewport);resize();
 const views={iso:[1.55,.88,1.85],side:[2.5,.55,0],top:[0,2.5,.0001],front:[0,.55,2.5]};
+let modelBox=new THREE.Box3();
 function setView(view='iso'){
+ if(!model) return;
+ resize();
  const dir=new THREE.Vector3(...views[view]).normalize();
- const distance=radius/(Math.sin(THREE.MathUtils.degToRad(camera.fov/2)))*1.30;
- camera.position.copy(center).addScaledVector(dir,distance);
- camera.up.set(0,1,0);camera.lookAt(center);controls.target.copy(center);controls.update();
+ // Calcular o enquadramento a partir dos oito cantos da geometria.
+ const right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),dir).normalize();
+ if(right.lengthSq()<1e-8)right.set(1,0,0);
+ const up=new THREE.Vector3().crossVectors(dir,right).normalize();
+ let maxHorizontal=0,maxVertical=0,maxDepth=0;
+ for(const x of [modelBox.min.x,modelBox.max.x])
+  for(const y of [modelBox.min.y,modelBox.max.y])
+   for(const z of [modelBox.min.z,modelBox.max.z]){
+    const v=new THREE.Vector3(x,y,z).sub(center);
+    maxHorizontal=Math.max(maxHorizontal,Math.abs(v.dot(right)));
+    maxVertical=Math.max(maxVertical,Math.abs(v.dot(up)));
+    maxDepth=Math.max(maxDepth,Math.abs(v.dot(dir)));
+   }
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
+ const distance=1.22*Math.max(maxVertical/Math.tan(vfov/2),maxHorizontal/Math.tan(hfov/2))+maxDepth;
+ camera.up.set(0,1,0);
+ camera.position.copy(center).addScaledVector(dir,Math.max(distance,0.1));
+ camera.near=Math.max(0.001,(distance-maxDepth*1.8)/100);
+ camera.far=Math.max(100,distance+maxDepth*4);
+ camera.updateProjectionMatrix();
+ controls.target.copy(center);
+ camera.lookAt(center);
+ controls.update();
  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));
 }
 function done(){document.getElementById('loading').classList.add('hide');setTimeout(()=>document.getElementById('loading').remove(),450)}
@@ -89,13 +113,13 @@ loader.load('./reformer.glb',gltf=>{
  // Assentamento no centro da cena sem modificar o aspecto original do conjunto.
  const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());model.position.sub(c);
  model.updateMatrixWorld(true);
- const b3=new THREE.Box3().setFromObject(model);b3.getCenter(center);radius=b3.getBoundingSphere(new THREE.Sphere()).radius;
+ modelBox.setFromObject(model);modelBox.getCenter(center);radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
  model.traverse(o=>{if(o.isMesh){o.material.side=THREE.DoubleSide;o.material.roughness=.78;o.material.metalness=.08;}});
  controls.minDistance=radius*.65;controls.maxDistance=radius*8;
  setView('iso');done();
 },event=>{if(event.total){const pct=Math.min(100,Math.round(100*event.loaded/event.total));document.getElementById('progress').style.width=pct+'%';document.getElementById('status').textContent=pct+'% carregado';}},e=>{console.error(e);document.getElementById('loading').style.display='none';document.getElementById('error').style.display='flex';});
 for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));
-document.getElementById('reset').addEventListener('click',()=>{controls.reset();setView('iso')});
+document.getElementById('reset').addEventListener('click',()=>setView('iso'));
 document.getElementById('fullscreen').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});
 function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
 </script>
