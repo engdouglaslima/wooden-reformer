@@ -1,12 +1,14 @@
 # Fit Dock Pilates — Wooden Reformer 3D Viewer
 
-Static website for GitHub Pages. All site content is in English.
+## Color correction update
 
-## Deployment
-1. Copy `index.html`, `reformer.glb`, `fit-dock-logo.png`, `.nojekyll`, and `README.md` to the repository root.
-2. Commit and push the changes to your `main` branch.
-3. Enable GitHub Pages from `main` / `(root)` in repository settings.
-4. Refresh the published page with Ctrl + Shift + R after deployment.
+- Preserves all 589 CAD geometry pieces and the original four color families.
+- Decodes 8-bit sRGB vertex colors into linear space before Three.js lighting (addresses washed-out material colors).
+- Uses neutral tone mapping and balanced studio lighting.
+- Keeps solid surfaces, working zoom, camera positioning and the English-only interface.
 
-## Camera and canvas correction
-The WebGL canvas is explicitly styled to occupy 100% of its container in CSS pixels. This is essential because the renderer uses a high device pixel ratio for sharp rendering; without CSS dimensions the drawing buffer can make the canvas larger than the viewport, moving the visible model toward the bottom-right.
+## Publish
+
+Replace `index.html` in your existing GitHub repository, then commit, push and refresh with Ctrl+Shift+R. No need to replace `reformer.glb` or `fit-dock-logo.png`.
+
+The source STEP does not contain photographic textures, so realistic wood grain or fabric would require separate material/texture work.

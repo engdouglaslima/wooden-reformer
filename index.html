@@ -63,12 +63,12 @@ const viewport=document.getElementById('viewport');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f0e9');
 const camera=new THREE.PerspectiveCamera(36,1,.01,100000);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.98;
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NeutralToneMapping;renderer.toneMappingExposure=1.0;
 viewport.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;controls.zoomSpeed=.8;
-scene.add(new THREE.HemisphereLight(0xffffff,0xb6a697,1.2));
+scene.add(new THREE.HemisphereLight(0xffffff,0xc7bfb3,1.45));
 function light(x,y,z,power,size){const l=new THREE.DirectionalLight('#ffffff',power);l.position.set(x,y,z);scene.add(l)}
-light(3,8,6,1.55);light(-5,3,-4,.48);light(0,5,-6,.3);
+light(3,8,6,1.8);light(-5,3,-4,.65);light(0,5,-6,.45);
 let center=new THREE.Vector3(),radius=1,axes={};let model;let activeView="iso";let userAdjustedCamera=false;
 const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
 new ResizeObserver(()=>{resize();if(model&&!userAdjustedCamera)setView(activeView)}).observe(viewport);resize();
@@ -110,13 +110,32 @@ loader.load('./reformer.glb',gltf=>{
  const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());model.position.sub(c);
  model.updateMatrixWorld(true);
  modelBox.setFromObject(model);modelBox.getCenter(center);radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
+ // STEP-derived GLB contains vertex colors encoded as 8-bit sRGB values.
+ // glTF expects LINEAR vertex colors, so decode them once before illumination.
+ // Without this conversion brown wood and dark upholstery appear washed out.
+ const decodeColor=v=>{const s=v/255;return Math.round(255*(s<=0.04045?s/12.92:Math.pow((s+0.055)/1.055,2.4)));};
+ const colorLUT=Uint8Array.from({length:256},(_,i)=>decodeColor(i));
+ const processed=new Set();
  model.traverse(o=>{if(o.isMesh){
+  const colors=o.geometry?.getAttribute('color');
+  if(colors && !processed.has(colors)){
+   processed.add(colors);
+   if(colors.array instanceof Uint8Array && colors.normalized){
+    const data=colors.array;
+    for(let i=0;i<colors.count;i++){
+     const j=i*colors.itemSize;
+     data[j]=colorLUT[data[j]];data[j+1]=colorLUT[data[j+1]];data[j+2]=colorLUT[data[j+2]];
+    }
+    colors.needsUpdate=true;
+   }
+  }
+
   const mats=Array.isArray(o.material)?o.material:[o.material];
   for(const mat of mats){
    mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.depthTest=true;
    mat.side=THREE.DoubleSide;
-   if('roughness' in mat)mat.roughness=.86;
-   if('metalness' in mat)mat.metalness=.025;
+   if('roughness' in mat)mat.roughness=.78;
+   if('metalness' in mat)mat.metalness=.06;
    mat.needsUpdate=true;
   }
  }});
