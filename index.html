@@ -3,301 +3,197 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b0b0b" />
-  <meta name="description" content="Fit Dock Pilates Wooden Reformer — premium product presentation with interactive 3D viewer." />
-  <title>Fit Dock Pilates | Wooden Reformer</title>
+  <meta name="theme-color" content="#f4f0e9" />
+  <meta name="description" content="Fit Dock Pilates Wooden Reformer — interactive 3D product viewer." />
+  <title>Fit Dock Pilates | Wooden Reformer 3D</title>
   <style>
-    :root{
-      --bg:#f5efe8;--bg-soft:#fbf7f2;--surface:#fffaf5;--ink:#1b1917;--muted:#7f7368;--line:#e3d7cb;
-      --accent:#c93232;--accent-dark:#8a2020;--radius:24px;--shadow:0 18px 48px rgba(44,29,17,.08);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    }
-    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;color:var(--ink);background:linear-gradient(180deg,#f8f2eb 0%,#f3ece4 100%)}
-    img{max-width:100%;display:block} a{text-decoration:none;color:inherit} button{font:inherit}
-    .container{width:min(1240px,calc(100% - 40px));margin:0 auto}
-    .topbar{background:#080808;color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
-    .topbar .container{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 0}
-    .brand{display:flex;align-items:center;gap:18px;min-width:0}.brand img{width:230px;max-width:42vw;height:auto}.brand-copy{min-width:0}
-    .brand-title{font-size:clamp(24px,2.5vw,42px);font-weight:700;letter-spacing:.04em;color:#fff;text-transform:uppercase}
-    .brand-sub{margin-top:6px;font-size:12px;letter-spacing:.36em;color:#d8d0c9;text-transform:uppercase;white-space:nowrap}
-    .navnote{font-size:12px;letter-spacing:.28em;color:#ece5df;text-transform:uppercase;white-space:nowrap}
-
-    .hero{padding:52px 0 38px}
-    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:38px;align-items:center}
-    .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#8d7c6f;margin-bottom:16px}
-    .hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,5vw,68px);line-height:1.02;margin:0 0 18px;color:#171412}
-    .hero p{font-size:18px;line-height:1.7;color:#64584d;max-width:640px;margin:0 0 26px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:28px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:999px;border:1px solid transparent;font-weight:600;transition:.22s ease;cursor:pointer}
-    .btn-primary{background:linear-gradient(180deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;box-shadow:0 12px 28px rgba(167,33,33,.24)}
-    .btn-primary:hover{transform:translateY(-1px)}
-    .btn-secondary{background:#fff8f1;border-color:#d9cabd;color:#3c352f}
-    .hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-    .stat{background:rgba(255,250,245,.82);backdrop-filter:blur(3px);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
-    .stat strong{display:block;font-size:22px;margin-bottom:6px}.stat span{font-size:13px;color:#75695e;line-height:1.4}
-    .hero-media{position:relative}
-    .hero-card{background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:18px;box-shadow:var(--shadow)}
-    .hero-visual{border-radius:22px;overflow:hidden;background:#ead8c7;position:relative;min-height:280px}
-    .hero-visual img{width:100%;height:100%;object-fit:cover}
-    .hero-badge{position:absolute;left:24px;bottom:24px;background:rgba(7,7,7,.78);color:#fff;padding:14px 16px;border-radius:16px;backdrop-filter:blur(8px);max-width:320px}
-    .hero-badge strong{display:block;font-size:15px;margin-bottom:4px}.hero-badge span{font-size:13px;line-height:1.5;color:#ddd6cf}
-
-    .section{padding:26px 0 74px}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}
-    .section-head h2{margin:0;font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,3.4vw,46px);line-height:1.1}
-    .section-head p{margin:0;max-width:540px;color:#6d6157;line-height:1.7}
-
-    .feature-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-    .feature{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
-    .feature .icon{width:42px;height:42px;border-radius:12px;background:#f4e4d6;color:#9d332f;display:grid;place-items:center;font-size:20px;margin-bottom:14px}
-    .feature h3{margin:0 0 8px;font-size:18px}.feature p{margin:0;color:#6d6157;line-height:1.65;font-size:14px}
-
-    .viewer-shell{background:var(--surface);border:1px solid var(--line);border-radius:30px;overflow:hidden;box-shadow:var(--shadow)}
-    .viewer-head{padding:24px 24px 0;display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
-    .viewer-title{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#9c8c7d;margin-bottom:10px}
-    .viewer-head h3{margin:0;font-size:28px;font-family:Georgia,'Times New Roman',serif}.viewer-head p{margin:10px 0 0;color:#706257;line-height:1.6;max-width:660px}
-    .viewer-note{padding:12px 16px;border-radius:14px;background:#fbf4ed;border:1px solid var(--line);font-size:13px;color:#7a6c60}
-    .viewer-stage{position:relative;height:720px;background:linear-gradient(180deg,#efe0d0 0%,#e7d3c0 100%);overflow:hidden}
-    .viewer-stage:before{content:'';position:absolute;inset:0;pointer-events:none;background:
-      radial-gradient(60% 52% at 16% 20%, rgba(255,255,255,.44), transparent 58%),
-      radial-gradient(42% 34% at 80% 18%, rgba(255,246,236,.28), transparent 50%),
-      linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 40%),
-      linear-gradient(180deg, transparent 0 64%, rgba(120,85,54,.06) 64% 100%);z-index:0}
-    #viewport{position:relative;z-index:1;width:100%;height:100%;outline:none;touch-action:none} #viewport canvas{display:block;width:100%;height:100%}
-    .viewer-overlay{position:absolute;left:28px;bottom:22px;display:flex;gap:10px;align-items:center;color:#75685d;z-index:2;font-size:13px;pointer-events:none}
-    .viewer-overlay svg{width:18px;height:18px}
-    .viewer-caption{position:absolute;right:28px;top:24px;z-index:2;font-size:12px;letter-spacing:.14em;color:#9d8d7f;text-transform:uppercase}
-    .loading{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:rgba(245,239,232,.95);transition:opacity .35s}.loading.hide{opacity:0;pointer-events:none}
-    .loader{text-align:center}.loader strong{display:block;font-size:22px;font-family:Georgia,serif;margin-bottom:14px}.track{margin:0 auto;width:min(280px,72vw);height:3px;background:#e4d5c8;border-radius:999px;overflow:hidden}.track div{height:100%;width:0;background:#b8804a;transition:width .2s}.status{margin-top:12px;font-size:13px;color:#7b6d61}
-    .error{display:none;position:absolute;inset:0;z-index:5;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(245,239,232,.98);color:#54483e}.error strong{display:block;font-size:18px;margin-bottom:8px}.error p{max-width:540px;line-height:1.65}
-    .viewer-controls{padding:20px 24px 24px;display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);background:#fcf7f1}
-    .controls{display:flex;gap:8px;flex-wrap:wrap}.control{border:1px solid #d6c7ba;background:transparent;color:#5c524a;padding:10px 16px;border-radius:999px;cursor:pointer;transition:.18s}.control:hover,.control[aria-pressed="true"]{background:#47403a;color:#fff;border-color:#47403a}
-    .control:focus-visible{outline:2px solid #8d342f;outline-offset:2px}.meta{font-size:12px;letter-spacing:.1em;color:#968a7e;text-transform:uppercase}
-
-    .closing{padding:0 0 70px}.closing-card{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;background:#121212;color:#fff;border-radius:30px;padding:34px;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow)}
-    .closing-card h3{margin:0 0 14px;font-size:36px;font-family:Georgia,'Times New Roman',serif}.closing-card p{margin:0;color:#d7d0c9;line-height:1.75;max-width:700px}
-    .closing-points{display:grid;gap:12px}.closing-point{padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#e8e2db;font-size:14px;line-height:1.6}
-
-    @media (max-width:1100px){.hero-grid,.closing-card{grid-template-columns:1fr}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-visual{min-height:460px}.viewer-stage{height:640px}}
-    @media (max-width:760px){.container{width:min(100% - 28px,1240px)}.topbar .container{padding:14px 0;align-items:flex-start}.brand{align-items:flex-start;gap:12px}.brand img{width:150px}.brand-title{font-size:26px}.brand-sub,.navnote,.viewer-caption{font-size:10px;letter-spacing:.18em}.hero{padding-top:30px}.hero p{font-size:16px}.hero-stats{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.viewer-stage{height:520px}.viewer-controls{padding:18px}.control{padding:9px 14px}.meta{width:100%}}
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#34332f;background:#f4f0e9}
+    *{box-sizing:border-box}body{margin:0;min-height:100svh}button{font:inherit;cursor:pointer}
+    .app{height:100svh;min-height:590px;display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+    header{display:flex;align-items:center;justify-content:space-between;padding:25px clamp(20px,4vw,64px);gap:16px;z-index:2}
+    header{background:#090909;color:#f7f7f7;min-height:122px;padding-top:17px;padding-bottom:17px}
+    .brand{display:flex;align-items:center;gap:24px}
+    .brand img{display:block;width:clamp(200px,26vw,350px);height:86px;object-fit:contain;object-position:left center}
+    .brand-name{font-size:17px;letter-spacing:.06em;font-weight:500}
+    .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:10px;color:#b9b9b9;margin-top:8px}
+    .top-label{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#d3d3d3}.stage{position:relative;min-height:0;overflow:hidden}
+    #viewport{height:100%;width:100%;outline:none;touch-action:none}canvas{display:block;width:100%;height:100%}.stage:after{content:'';position:absolute;inset:auto 0 0;height:80px;pointer-events:none;background:linear-gradient(transparent,#f4f0e9)}
+    .hint{position:absolute;left:clamp(20px,4vw,64px);bottom:25px;z-index:1;color:#776e64;display:flex;align-items:center;gap:8px;font-size:12px;pointer-events:none}
+    .hint svg{width:17px;height:17px}.loading{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:#f4f0e9;transition:opacity .4s}.loading.hide{opacity:0;pointer-events:none}.loader{text-align:center;max-width:85vw}.loader span{font-family:Georgia,serif;font-size:23px}.track{margin-top:21px;width:240px;max-width:75vw;height:2px;background:#ddd5c9}.track div{height:100%;width:0;background:#9e8062;transition:width .2s}.status{font-size:12px;margin-top:14px;color:#83796c}
+    .error{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;z-index:6;padding:25px;text-align:center;background:#f4f0e9;color:#594c3e}.error strong{font-size:18px}.error p{max-width:520px;font-size:13px;line-height:1.6}
+    footer{z-index:2;border-top:1px solid #ded7cd;padding:19px clamp(20px,4vw,64px) 23px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:17px}
+    .controls{display:flex;flex-wrap:wrap;align-items:center;gap:7px}.control{border:1px solid #cfc6bb;background:transparent;color:#65594b;padding:10px 14px;border-radius:5px;font-size:12px;transition:.2s}.control:hover,.control[aria-pressed="true"]{background:#514a42;color:white;border-color:#514a42}.control:focus-visible{outline:2px solid #826447;outline-offset:2px}
+    .meta{font-size:11px;color:#948a7f;letter-spacing:.045em}.note{position:absolute;right:clamp(20px,4vw,64px);top:24px;color:#a49a8e;font-size:11px;letter-spacing:.04em}
+    @media(max-width:700px){.app{min-height:610px}header{min-height:94px;padding-top:12px;padding-bottom:12px}.brand img{width:170px;height:57px}.brand{gap:8px}.brand-name{font-size:12px}.eyebrow{font-size:8px;letter-spacing:.06em}.top-label{display:none}.hint{bottom:15px}.note{top:8px;font-size:10px}footer{padding-top:14px;padding-bottom:20px}.control{padding:9px 11px}.meta{width:100%}}
   </style>
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"}}
   </script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container">
-      <div class="brand">
-        <img src="./fit-dock-logo.png" alt="Fit Dock Pilates" />
-        <div class="brand-copy">
-          <div class="brand-title">Wooden Reformer</div>
-          <div class="brand-sub">Design · Movement · Precision</div>
-        </div>
-      </div>
-      <div class="navnote">Premium Pilates Equipment</div>
-    </div>
+<main class="app">
+  <header>
+    <div class="brand"><img src="./fit-dock-logo.png" alt="Fit Dock Pilates"/><div class="brand-copy"><div class="brand-name">WOODEN REFORMER</div><div class="eyebrow">Design · Movement · Precision</div></div></div>
+    <div class="top-label">INTERACTIVE 3D EXPERIENCE</div>
   </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <div class="eyebrow">Fit Dock Pilates · Signature Equipment Concept</div>
-          <h1>A more premium digital presentation for your Wooden Reformer.</h1>
-          <p>Present the product with a refined hero visual for immediate impact, then let investors and partners explore the actual CAD-based geometry through an interactive 3D viewer.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#viewer">Explore 3D Viewer</a>
-            <a class="btn btn-secondary" href="#highlights">View Highlights</a>
-          </div>
-          <div class="hero-stats">
-            <div class="stat"><strong>Premium Look</strong><span>Hero section inspired by a high-end studio render for stronger first impressions.</span></div>
-            <div class="stat"><strong>3D Access</strong><span>Interactive model allows rotation, zoom and fixed viewpoints directly in the browser.</span></div>
-            <div class="stat"><strong>Brand-Ready</strong><span>English presentation with Fit Dock Pilates identity for investor-facing use.</span></div>
-          </div>
-        </div>
-        <div class="hero-media">
-          <div class="hero-card">
-            <div class="hero-visual">
-              <img src="./hero-reformer-premium.png" alt="Premium visual of the Wooden Reformer in a warm studio environment" />
-              <div class="hero-badge">
-                <strong>Hero Visual</strong>
-                <span>Use a premium static image for visual impact, while keeping the interactive viewer below for technical exploration.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="highlights">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Product Highlights</div>
-            <h2>Built for a cleaner and more persuasive presentation.</h2>
-          </div>
-          <p>The page is now structured like a compact product landing page: a strong first visual, concise messaging, premium styling and a dedicated interactive section for the CAD model.</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature"><div class="icon">✦</div><h3>Premium Hero Image</h3><p>A polished lead visual creates immediate appeal and helps the equipment feel market-ready at first glance.</p></article>
-          <article class="feature"><div class="icon">◌</div><h3>Interactive 3D Viewer</h3><p>The model remains accessible for rotation, zoom and standard viewpoints, preserving the technical side of the presentation.</p></article>
-          <article class="feature"><div class="icon">▣</div><h3>Investor-Friendly Structure</h3><p>Text is concise, visual hierarchy is improved and the overall layout feels more aligned with commercial presentations.</p></article>
-          <article class="feature"><div class="icon">—</div><h3>Brand Consistency</h3><p>Fit Dock Pilates identity is integrated into the page, keeping the communication more coherent and polished.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="viewer">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Interactive Section</div>
-            <h2>Explore the CAD-based Wooden Reformer in 3D.</h2>
-          </div>
-          <p>This viewer is intended for product exploration. It presents the actual exported geometry, while the hero image above carries the premium visual storytelling.</p>
-        </div>
-        <div class="viewer-shell">
-          <div class="viewer-head">
-            <div>
-              <div class="viewer-title">Interactive 3D Experience</div>
-              <h3>Wooden Reformer Viewer</h3>
-              <p>Rotate the model freely, zoom in for closer inspection and switch between side, top and front views. This section is best used to support technical conversations after the first visual impression has been created by the hero image.</p>
-            </div>
-            <div class="viewer-note">CAD-derived geometry · Browser-based viewer · No additional software required</div>
-          </div>
-          <div class="viewer-stage" aria-label="Interactive 3D view of the Pilates reformer">
-            <div id="viewport" tabindex="0" aria-label="Drag to rotate and scroll or pinch to zoom"></div>
-            <div class="viewer-caption">CAD-derived 3D model</div>
-            <div class="viewer-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M2 12h20M8 5l4-3 4 3M8 19l4 3 4-3M5 8l-3 4 3 4M19 8l3 4-3 4"/></svg> Drag to rotate · Scroll or pinch to zoom</div>
-            <div class="loading" id="loading" role="status"><div class="loader"><strong>Preparing 3D viewer</strong><div class="track"><div id="progress"></div></div><div class="status" id="status">Loading geometry...</div></div></div>
-            <div class="error" id="error"><div><strong>Unable to load the 3D model</strong><p>Make sure <code>reformer.glb</code> is in the same folder as <code>index.html</code>, and open the site using HTTPS or a local web server.</p></div></div>
-          </div>
-          <div class="viewer-controls">
-            <div class="controls" aria-label="Camera view controls">
-              <button class="control" data-view="iso" aria-pressed="true">Perspective</button>
-              <button class="control" data-view="side" aria-pressed="false">Side</button>
-              <button class="control" data-view="top" aria-pressed="false">Top</button>
-              <button class="control" data-view="front" aria-pressed="false">Front</button>
-              <button class="control" id="reset" title="Return to default camera">Reset view</button>
-              <button class="control" id="fullscreen" title="Enter full screen">Full screen</button>
-            </div>
-            <div class="meta">Fit Dock Pilates · Design concept · CAD-based geometry</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="closing">
-      <div class="container">
-        <div class="closing-card">
-          <div>
-            <div class="eyebrow" style="color:#b7a79a">Presentation Strategy</div>
-            <h3>Lead with emotion. Support with interaction.</h3>
-            <p>This approach is ideal when the viewer alone does not yet communicate the level of finish you want. The premium hero image sells the concept visually, and the 3D model adds transparency and credibility by showing the real product geometry.</p>
-          </div>
-          <div class="closing-points">
-            <div class="closing-point">Use the top image when presenting the product to investors, partners or customers.</div>
-            <div class="closing-point">Use the 3D viewer below when discussing dimensions, construction logic or component placement.</div>
-            <div class="closing-point">If needed later, the page can be expanded with more renders, specs, benefits or a short investment pitch.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
+  <section class="stage" aria-label="Interactive 3D view of the Pilates reformer">
+    <div id="viewport" tabindex="0" aria-label="Drag to rotate and scroll or pinch to zoom"></div>
+    <div class="note">CAD-DERIVED 3D MODEL</div>
+    <div class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M2 12h20M8 5l4-3 4 3M8 19l4 3 4-3M5 8l-3 4 3 4M19 8l3 4-3 4"/></svg>Drag to rotate · Scroll or pinch to zoom</div>
+    <div class="loading" id="loading" role="status"><div class="loader"><span>Preparing 3D viewer</span><div class="track"><div id="progress"></div></div><p class="status" id="status">Loading geometry...</p></div></div>
+    <div class="error" id="error"><strong>Unable to load the 3D model</strong><p>Make sure <code>reformer.glb</code> is in the same folder as <code>index.html</code>, and open the site using HTTPS or a local web server.</p></div>
+  </section>
+  <footer>
+    <div class="controls" aria-label="Camera view controls">
+      <button class="control" data-view="iso" aria-pressed="true">Perspective</button>
+      <button class="control" data-view="side" aria-pressed="false">Side</button>
+      <button class="control" data-view="top" aria-pressed="false">Top</button>
+      <button class="control" data-view="front" aria-pressed="false">Front</button>
+      <button class="control" id="reset" title="Return to default camera">Reset view</button>
+      <button class="control" id="fullscreen" title="Enter full screen">Full screen</button>
+    </div>
+    <div class="meta">FIT DOCK PILATES · DESIGN CONCEPT · CAD-BASED GEOMETRY</div>
+  </footer>
+</main>
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-
 const viewport=document.getElementById('viewport');
-const scene=new THREE.Scene();
+const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f0e9');
 const camera=new THREE.PerspectiveCamera(36,1,.01,100000);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=0.98;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.85;
 viewport.appendChild(renderer.domElement);
-
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;controls.zoomSpeed=.8;
-
-scene.add(new THREE.AmbientLight(0xffffff,1.12));
-scene.add(new THREE.HemisphereLight(0xfff7ef,0xc4aa8e,0.52));
-const keyLight=new THREE.DirectionalLight(0xfff5ea,1.45);keyLight.position.set(5,9,7);scene.add(keyLight);
-const fillLight=new THREE.DirectionalLight(0xf5e4d0,.28);fillLight.position.set(-5,4,-3);scene.add(fillLight);
-const backLight=new THREE.DirectionalLight(0xffffff,.15);backLight.position.set(0,6,-8);scene.add(backLight);
-
-let center=new THREE.Vector3(),radius=1;let model;let activeView='iso';let userAdjustedCamera=false;let shadowPlane=null;let modelBox=new THREE.Box3();
-const views={iso:[1.55,.88,1.85],side:[2.5,.55,0],top:[0,2.5,.0001],front:[0,.55,2.5]};
-
-function createShadowTexture(){
- const size=512; const c=document.createElement('canvas'); c.width=c.height=size;
- const ctx=c.getContext('2d');
- const g=ctx.createRadialGradient(size/2,size/2,size*0.12,size/2,size/2,size*0.46);
- g.addColorStop(0,'rgba(0,0,0,0.24)'); g.addColorStop(.36,'rgba(0,0,0,0.14)'); g.addColorStop(1,'rgba(0,0,0,0)');
- ctx.fillStyle=g; ctx.fillRect(0,0,size,size);
- const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
-}
-function ensureShadow(sizeX,sizeZ,y){
- if(shadowPlane) scene.remove(shadowPlane);
- const tex=createShadowTexture();
- const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,opacity:.68});
- shadowPlane=new THREE.Mesh(new THREE.PlaneGeometry(sizeX*1.45,sizeZ*1.12),mat);
- shadowPlane.rotation.x=-Math.PI/2; shadowPlane.position.set(center.x,y+0.55,center.z); scene.add(shadowPlane);
-}
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;controls.zoomSpeed=.8;
+scene.add(new THREE.AmbientLight(0xffffff,0.8));
+scene.add(new THREE.HemisphereLight(0xffffff,0xcfc2b6,0.55));
+function light(x,y,z,power){const l=new THREE.DirectionalLight('#fffaf2',power);l.position.set(x,y,z);scene.add(l)}
+light(5,9,7,1.05);light(-5,4,-3,0.35);light(0,6,-8,0.17);
+let center=new THREE.Vector3(),radius=1,axes={};let model;let activeView="iso";let userAdjustedCamera=false;
 const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
-new ResizeObserver(()=>{resize();if(model&&!userAdjustedCamera)setView(activeView)}).observe(viewport); resize();
-
+new ResizeObserver(()=>{resize();if(model&&!userAdjustedCamera)setView(activeView)}).observe(viewport);resize();
+const views={iso:[1.55,.88,1.85],side:[2.5,.55,0],top:[0,2.5,.0001],front:[0,.55,2.5]};
+let modelBox=new THREE.Box3();
 function setView(view='iso'){
  if(!model) return;
- activeView=view; userAdjustedCamera=false; resize();
+ activeView=view;userAdjustedCamera=false;
+ resize();
  const dir=new THREE.Vector3(...views[view]).normalize();
- const vfov=THREE.MathUtils.degToRad(camera.fov); const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
- const halfFov=Math.min(vfov,hfov)/2; const distance=Math.max(0.1,(radius/Math.sin(halfFov))*1.18);
- camera.up.set(0,1,0); camera.position.copy(center).addScaledVector(dir,distance);
- camera.near=Math.max(0.0001,radius*.008); camera.far=radius*50; camera.updateProjectionMatrix();
- controls.target.copy(center); controls.minDistance=radius*.13; controls.maxDistance=radius*15; camera.lookAt(center); controls.update();
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
+ // A bounding sphere guarantees the whole assembly remains visible in every view.
+ const halfFov=Math.min(vfov,hfov)/2;
+ const distance=Math.max(0.1,(radius/Math.sin(halfFov))*1.18);
+ camera.up.set(0,1,0);
+ camera.position.copy(center).addScaledVector(dir,distance);
+ // Keep clipping planes stable while zooming: a near plane tied to the initial distance clips the model when approaching.
+ camera.near=Math.max(0.0001,radius*.008);
+ camera.far=radius*50;
+ camera.updateProjectionMatrix();
+ controls.target.copy(center);
+ controls.minDistance=radius*.13;
+ controls.maxDistance=radius*15;
+ camera.lookAt(center);
+ controls.update();
  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));
 }
-function done(){document.getElementById('loading').classList.add('hide');setTimeout(()=>document.getElementById('loading')?.remove(),420)}
-
+function done(){document.getElementById('loading').classList.add('hide');setTimeout(()=>document.getElementById('loading').remove(),450)}
 const loader=new GLTFLoader();
 loader.load('./reformer.glb',gltf=>{
- model=gltf.scene; scene.add(model);
- const box=new THREE.Box3().setFromObject(model); if(box.isEmpty()) throw new Error('Model has no geometry');
+ model=gltf.scene;scene.add(model);
+ const box=new THREE.Box3().setFromObject(model);
+ if(box.isEmpty())throw new Error('Modelo sem geometria');
  const originalSize=box.getSize(new THREE.Vector3());
  const scale=3/Math.max(originalSize.x,originalSize.y,originalSize.z);
- model.scale.setScalar(scale); model.updateMatrixWorld(true);
- const b2=new THREE.Box3().setFromObject(model); const c=b2.getCenter(new THREE.Vector3()); model.position.sub(c);
- model.updateMatrixWorld(true); modelBox.setFromObject(model); modelBox.getCenter(center); radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
-
- const palette=[
-  {name:'hardware', rgb:[153,158,157], material:()=>new THREE.MeshPhysicalMaterial({color:'#c7c7c3', roughness:0.34, metalness:0.96, clearcoat:0.05, clearcoatRoughness:0.18})},
-  {name:'upholstery', rgb:[101,105,103], material:()=>new THREE.MeshPhysicalMaterial({color:'#2f3135', roughness:0.93, metalness:0.02, sheen:0.36, sheenColor:'#585d62', sheenRoughness:0.8})},
-  {name:'wood', rgb:[184,137,85], material:()=>new THREE.MeshPhysicalMaterial({color:'#d6ab7e', roughness:0.72, metalness:0.0, clearcoat:0.1, clearcoatRoughness:0.78})},
-  {name:'rubber', rgb:[53,56,55], material:()=>new THREE.MeshStandardMaterial({color:'#17191a', roughness:0.98, metalness:0.0})}
- ];
- const cache=new Map();
- const nearestMaterial=(rgb)=>{let best=palette[0],bestD=Infinity; for(const p of palette){const d=(rgb[0]-p.rgb[0])**2+(rgb[1]-p.rgb[1])**2+(rgb[2]-p.rgb[2])**2; if(d<bestD){bestD=d;best=p;}} if(!cache.has(best.name)) cache.set(best.name,best.material()); return cache.get(best.name);};
- const avgVertexColor=(attr)=>{let r=0,g=0,b=0,n=attr.count; if(attr.array instanceof Uint8Array && attr.normalized){for(let i=0;i<n;i++){const j=i*attr.itemSize; r+=attr.array[j]; g+=attr.array[j+1]; b+=attr.array[j+2];}} else {for(let i=0;i<n;i++){const j=i*attr.itemSize; r+=Math.round(attr.array[j]*255); g+=Math.round(attr.array[j+1]*255); b+=Math.round(attr.array[j+2]*255);}} return [r/n,g/n,b/n];};
-
- model.traverse(o=>{if(o.isMesh){
-   if(o.geometry && !o.geometry.getAttribute('normal')) o.geometry.computeVertexNormals();
-   const colors=o.geometry?.getAttribute('color');
-   if(colors) o.material=nearestMaterial(avgVertexColor(colors));
-   if(Array.isArray(o.material)){o.material.forEach(mat=>{mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.depthTest=true;mat.side=THREE.DoubleSide;mat.needsUpdate=true;});}
-   else if(o.material){o.material.transparent=false;o.material.opacity=1;o.material.depthWrite=true;o.material.depthTest=true;o.material.side=THREE.DoubleSide;o.material.needsUpdate=true;}
- }});
- const size3=modelBox.getSize(new THREE.Vector3()); ensureShadow(Math.max(size3.x,size3.z),Math.max(size3.x,size3.z),modelBox.min.y);
- setView('iso'); done();
-},event=>{ if(event.total){const pct=Math.min(100,Math.round(100*event.loaded/event.total)); document.getElementById('progress').style.width=pct+'%'; document.getElementById('status').textContent=pct+'% loaded';}},err=>{console.error(err); document.getElementById('loading').style.display='none'; document.getElementById('error').style.display='flex';});
+ model.scale.setScalar(scale);model.updateMatrixWorld(true);
+ // Assentamento no centro da cena sem modificar o aspecto original do conjunto.
+ const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());model.position.sub(c);
+ model.updateMatrixWorld(true);
+ modelBox.setFromObject(model);modelBox.getCenter(center);radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
+ // The CAD-derived GLB stores only four flat vertex-color groups.
+ // Instead of trying to preserve raw CAD colors, map each dominant color
+ // to a more realistic product material while preserving the geometry.
+ // Wood-grain texture generated locally (no external image requests).
+ // It is applied using UVs derived from CAD coordinates, so it works with the STEP-based mesh.
+ function woodTexture(){
+   const c=document.createElement('canvas');c.width=512;c.height=512;
+   const ctx=c.getContext('2d');const image=ctx.createImageData(512,512);
+   let seed=72413;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};
+   const knots=Array.from({length:7},()=>({y:random()*512,x:random()*512,amp:random()*4}));
+   for(let y=0;y<512;y++)for(let x=0;x<512;x++){
+     const f=y*0.165+Math.sin(x*.012+y*.009)*0.65+Math.sin(y*.039+x*.005)*.85;
+     let k=0;for(const n of knots){const dx=(x-n.x)/90,dy=(y-n.y)/17;k+=Math.exp(-dx*dx-dy*dy)*n.amp;}
+     const grain=Math.sin((f+k)*6.0)*4+Math.sin((f+k)*1.8)*5+(random()-.5)*8;
+     const shade=grain+Math.sin(x*.018+y*.006)*2;
+     const i=(y*512+x)*4;
+     image.data[i]=Math.max(0,Math.min(255,214+shade));
+     image.data[i+1]=Math.max(0,Math.min(255,170+shade*.9));
+     image.data[i+2]=Math.max(0,Math.min(255,126+shade*.7));image.data[i+3]=255;
+   }
+   ctx.putImageData(image,0,0);
+   const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
+   t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+   return t;
+ }
+ const woodMap=woodTexture();
+ const materials={
+   wood:new THREE.MeshStandardMaterial({color:'#ffffff',map:woodMap,roughness:.72,metalness:0,side:THREE.DoubleSide}),
+   upholstery:new THREE.MeshStandardMaterial({color:'#242326',roughness:.9,metalness:0,side:THREE.DoubleSide}),
+   metal:new THREE.MeshStandardMaterial({color:'#c0c3c5',metalness:.65,roughness:.38,side:THREE.DoubleSide}),
+   rubber:new THREE.MeshStandardMaterial({color:'#27272a',roughness:.95,metalness:0,side:THREE.DoubleSide})
+ };
+ function classify(rgb){
+   const colors={wood:[184,137,85],metal:[153,158,157],upholstery:[101,105,103],rubber:[53,56,55]};
+   let best='metal',dist=Infinity;
+   for(const [name,v] of Object.entries(colors)){
+     const d=(rgb[0]-v[0])**2+(rgb[1]-v[1])**2+(rgb[2]-v[2])**2;
+     if(d<dist){dist=d;best=name;}
+   }return best;
+ }
+ const averageColor=a=>{
+   if(!a||!a.count)return [153,158,157];
+   let r=0,g=0,b=0;
+   // glTF's CAD color groups are uniform, so the first vertex is representative.
+   if(a.array instanceof Uint8Array&&a.normalized)return [a.array[0],a.array[1],a.array[2]];
+   return [Math.round(a.getX(0)*255),Math.round(a.getY(0)*255),Math.round(a.getZ(0)*255)];
+ };
+ function planarUV(geometry){
+   const p=geometry.getAttribute('position');if(!p)return;
+   geometry.computeBoundingBox();const s=geometry.boundingBox.getSize(new THREE.Vector3());
+   // Two broadest local axes define a stable projection for the wood grain.
+   const axes=[['x',s.x],['y',s.y],['z',s.z]].sort((a,b)=>b[1]-a[1]);
+   const uIndex={x:0,y:1,z:2}[axes[0][0]],vIndex={x:0,y:1,z:2}[axes[1][0]];
+   const uv=new Float32Array(p.count*2);
+   const unit=270; // approx. 270 mm of wood per texture repeat
+   for(let i=0;i<p.count;i++){
+     const xyz=[p.getX(i),p.getY(i),p.getZ(i)];uv[2*i]=xyz[uIndex]/unit;uv[2*i+1]=xyz[vIndex]/unit;
+   }geometry.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+ }
+ model.traverse(o=>{if(!o.isMesh)return;
+   const g=o.geometry;
+   // Generated CAD mesh has no normal vectors; compute them for physically lit materials.
+   if(g&&!g.getAttribute('normal'))g.computeVertexNormals();
+   const col=averageColor(g?.getAttribute('color'));
+   let kind=classify(col);
+   // The 780 x 800 x 50 mm carriage cushion inherited the wood color in CAD.
+   // Reassign only this geometric part to charcoal upholstery.
+   if(kind==='wood'&&g){
+     g.computeBoundingBox();const sz=g.boundingBox.getSize(new THREE.Vector3());
+     const a=[sz.x,sz.y,sz.z].sort((x,y)=>x-y);
+     if(a[0]>35&&a[0]<65&&a[1]>720&&a[1]<830&&a[2]>720&&a[2]<850){kind='upholstery';}
+   }
+   if(kind==='wood')planarUV(g);
+   o.material=materials[kind];
+   o.material.transparent=false;o.material.opacity=1;o.material.depthWrite=true;
+ });
+ setView('iso');done();
+},event=>{if(event.total){const pct=Math.min(100,Math.round(100*event.loaded/event.total));document.getElementById('progress').style.width=pct+'%';document.getElementById('status').textContent=pct+'% loaded';}},e=>{console.error(e);document.getElementById('loading').style.display='none';document.getElementById('error').style.display='flex';});
 controls.addEventListener('start',()=>{userAdjustedCamera=true});
-for(const btn of document.querySelectorAll('[data-view]')) btn.addEventListener('click',()=>setView(btn.dataset.view));
+for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));
 document.getElementById('reset').addEventListener('click',()=>setView('iso'));
-document.getElementById('fullscreen').addEventListener('click',()=>{const wrap=document.querySelector('.viewer-shell'); if(!document.fullscreenElement) wrap.requestFullscreen?.(); else document.exitFullscreen?.()});
-function animate(){requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera)} animate();
+document.getElementById('fullscreen').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
 </script>
 </body>
 </html>

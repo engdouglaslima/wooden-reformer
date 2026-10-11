@@ -1,10 +1,7 @@
-# Fit Dock Pilates — Wooden Reformer Landing Page
+# Fit Dock Pilates 3D Viewer — V4
 
-This package contains:
-- `index.html` — redesigned landing page with premium hero image and embedded 3D viewer
-- `fit-dock-logo.png` — brand logo
-- `hero-reformer-premium.png` — premium hero image used in the top section
-- `reformer.glb` — 3D model for the interactive viewer
+Static GitHub Pages site. Keep index.html, reformer.glb and fit-dock-logo.png in the repository root.
 
-## Publish on GitHub Pages
-Upload all files to the root of your repository and keep them in the same folder.
+Changes: CAD cushion geometry is assigned a dark upholstered material, warm procedural wood grain is projected onto wooden parts, metallic and rubber finishes refined, and lighting adjusted. 3D shape is unchanged.
+
+All page text is in English.
