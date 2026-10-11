@@ -201,7 +201,7 @@ loader.load('./reformer.glb',gltf=>{
        sz.x>=110 && sz.x<=140 && sz.y>=10 && sz.y<=22 && sz.z>=10 && sz.z<=22 &&
        Math.abs(pc.x)<20 && pc.z>40 && pc.z<120 && pc.y>330 && pc.y<390
      );
-     // Circular side support plate near the spring end should be stainless/aluminum, not black.
+     // Keep the circular side support plate near the spring end black.
      const isCircularSideSupport=(
        sz.x>=4 && sz.x<=10 && sz.y>=115 && sz.y<=155 && sz.z>=180 && sz.z<=220 &&
        Math.abs(pc.x)>360 && Math.abs(pc.x)<430 && pc.z>-1020 && pc.z<-880 && pc.y>300 && pc.y<380
@@ -209,7 +209,7 @@ loader.load('./reformer.glb',gltf=>{
      if(isFoot) kind='wood';
      if(isHeadPad) kind='upholstery';
      if(isInnerTube) kind='metal';
-     if(isCircularSideSupport) kind='metal';
+     if(isCircularSideSupport) kind='rubber';
    }
    if(kind==='wood')planarUV(g);
    o.material=materials[kind];
