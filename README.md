@@ -1,14 +1,10 @@
-# Fit Dock Pilates — Wooden Reformer 3D Viewer
+# Fit Dock Pilates — Wooden Reformer Landing Page
 
-## Color correction update
+This package contains:
+- `index.html` — redesigned landing page with premium hero image and embedded 3D viewer
+- `fit-dock-logo.png` — brand logo
+- `hero-reformer-premium.png` — premium hero image used in the top section
+- `reformer.glb` — 3D model for the interactive viewer
 
-- Preserves all 589 CAD geometry pieces and the original four color families.
-- Decodes 8-bit sRGB vertex colors into linear space before Three.js lighting (addresses washed-out material colors).
-- Uses neutral tone mapping and balanced studio lighting.
-- Keeps solid surfaces, working zoom, camera positioning and the English-only interface.
-
-## Publish
-
-Replace `index.html` in your existing GitHub repository, then commit, push and refresh with Ctrl+Shift+R. No need to replace `reformer.glb` or `fit-dock-logo.png`.
-
-The source STEP does not contain photographic textures, so realistic wood grain or fabric would require separate material/texture work.
+## Publish on GitHub Pages
+Upload all files to the root of your repository and keep them in the same folder.
