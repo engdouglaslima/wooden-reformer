@@ -1,17 +1,12 @@
 # Fit Dock Pilates — Wooden Reformer 3D Viewer
 
-A static, English-language 3D product viewer for GitHub Pages.
+Static website for GitHub Pages. All site content is in English.
 
-## Files
-- `index.html`: the complete website
-- `reformer.glb`: 3D CAD geometry
-- `fit-dock-logo.png`: Fit Dock Pilates branding
-- `.nojekyll`: GitHub Pages setting
+## Deployment
+1. Copy `index.html`, `reformer.glb`, `fit-dock-logo.png`, `.nojekyll`, and `README.md` to the repository root.
+2. Commit and push the changes to your `main` branch.
+3. Enable GitHub Pages from `main` / `(root)` in repository settings.
+4. Refresh the published page with Ctrl + Shift + R after deployment.
 
-## Publish
-Copy all files to the root of your GitHub repository. Commit, push to the `main` branch, and enable **Settings → Pages → Deploy from a branch → main / (root)**. Wait for the Pages workflow to succeed. Refresh with Ctrl+Shift+R.
-
-## Notes
-- The viewer loads Three.js from jsDelivr, so internet access is required.
-- The GLB is publicly downloadable from any public website; do not publish proprietary geometry unless you intend to share it.
-- Material appearance is conceptual and can be improved later.
+## Camera and canvas correction
+The WebGL canvas is explicitly styled to occupy 100% of its container in CSS pixels. This is essential because the renderer uses a high device pixel ratio for sharp rendering; without CSS dimensions the drawing buffer can make the canvas larger than the viewport, moving the visible model toward the bottom-right.
