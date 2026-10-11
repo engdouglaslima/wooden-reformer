@@ -16,8 +16,14 @@
     .brand img{display:block;width:clamp(200px,26vw,350px);height:86px;object-fit:contain;object-position:left center}
     .brand-name{font-size:17px;letter-spacing:.06em;font-weight:500}
     .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:10px;color:#b9b9b9;margin-top:8px}
-    .top-label{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#d3d3d3}.stage{position:relative;min-height:0;overflow:hidden}
-    #viewport{height:100%;width:100%;outline:none;touch-action:none}canvas{display:block;width:100%;height:100%}.stage:after{content:'';position:absolute;inset:auto 0 0;height:80px;pointer-events:none;background:linear-gradient(transparent,#f4f0e9)}
+    .top-label{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:#d3d3d3}.stage{position:relative;min-height:0;overflow:hidden;background:linear-gradient(180deg,#efdcc7 0%,#ead6c0 40%,#e8d6c4 100%)}
+    .stage:before{content:'';position:absolute;inset:0;pointer-events:none;background:
+      radial-gradient(65% 65% at 10% 25%, rgba(255,255,255,.42), transparent 55%),
+      radial-gradient(45% 40% at 82% 22%, rgba(255,244,230,.28), transparent 50%),
+      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 42%),
+      linear-gradient(180deg, transparent 0 62%, rgba(124,87,55,.05) 62% 100%);
+      z-index:0}
+    #viewport{position:relative;z-index:1;height:100%;width:100%;outline:none;touch-action:none}canvas{display:block;width:100%;height:100%}.stage:after{content:'';position:absolute;inset:auto 0 0;height:96px;pointer-events:none;background:linear-gradient(transparent,rgba(232,214,196,.95))}
     .hint{position:absolute;left:clamp(20px,4vw,64px);bottom:25px;z-index:1;color:#776e64;display:flex;align-items:center;gap:8px;font-size:12px;pointer-events:none}
     .hint svg{width:17px;height:17px}.loading{position:absolute;inset:0;z-index:4;display:grid;place-items:center;background:#f4f0e9;transition:opacity .4s}.loading.hide{opacity:0;pointer-events:none}.loader{text-align:center;max-width:85vw}.loader span{font-family:Georgia,serif;font-size:23px}.track{margin-top:21px;width:240px;max-width:75vw;height:2px;background:#ddd5c9}.track div{height:100%;width:0;background:#9e8062;transition:width .2s}.status{font-size:12px;margin-top:14px;color:#83796c}
     .error{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;z-index:6;padding:25px;text-align:center;background:#f4f0e9;color:#594c3e}.error strong{font-size:18px}.error p{max-width:520px;font-size:13px;line-height:1.6}
@@ -59,18 +65,40 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 const viewport=document.getElementById('viewport');
-const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f0e9');
+const scene=new THREE.Scene();scene.background=null;
 const camera=new THREE.PerspectiveCamera(36,1,.01,100000);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.96;
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=0.98;
 viewport.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.minPolarAngle=.08;controls.maxPolarAngle=Math.PI-.08;controls.enablePan=true;controls.zoomSpeed=.8;
-scene.add(new THREE.AmbientLight(0xffffff,1.15));
-scene.add(new THREE.HemisphereLight(0xffffff,0xd8d0c4,0.55));
-function light(x,y,z,power){const l=new THREE.DirectionalLight('#fffaf2',power);l.position.set(x,y,z);scene.add(l)}
-light(5,9,7,1.65);light(-5,4,-3,0.45);light(0,6,-8,0.25);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(renderer),0.04).texture;
+scene.add(new THREE.AmbientLight(0xffffff,0.85));
+scene.add(new THREE.HemisphereLight(0xfff6ee,0xc4aa8e,0.5));
+function light(x,y,z,power,color='#fff5ea'){const l=new THREE.DirectionalLight(color,power);l.position.set(x,y,z);scene.add(l)}
+light(5,9,7,1.35);light(-5,4,-3,0.3,'#f8e5d1');light(0,6,-8,0.18,'#fffdf8');
 let center=new THREE.Vector3(),radius=1,axes={};let model;let activeView="iso";let userAdjustedCamera=false;
+let shadowPlane=null;
+function createShadowTexture(){
+ const size=512; const c=document.createElement('canvas'); c.width=c.height=size;
+ const ctx=c.getContext('2d');
+ const g=ctx.createRadialGradient(size/2,size/2,size*0.12,size/2,size/2,size*0.46);
+ g.addColorStop(0,'rgba(0,0,0,0.28)');
+ g.addColorStop(0.35,'rgba(0,0,0,0.18)');
+ g.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=g; ctx.fillRect(0,0,size,size);
+ const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
+}
+function ensureShadow(sizeX,sizeZ,y){
+ if(shadowPlane) scene.remove(shadowPlane);
+ const tex=createShadowTexture();
+ const mat=new THREE.MeshBasicMaterial({map:tex, transparent:true, depthWrite:false, opacity:0.72});
+ shadowPlane=new THREE.Mesh(new THREE.PlaneGeometry(sizeX*1.45,sizeZ*1.1),mat);
+ shadowPlane.rotation.x=-Math.PI/2; shadowPlane.position.set(center.x,y+0.5,center.z);
+ scene.add(shadowPlane);
+}
 const resize=()=>{const w=viewport.clientWidth||1,h=viewport.clientHeight||1;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
 new ResizeObserver(()=>{resize();if(model&&!userAdjustedCamera)setView(activeView)}).observe(viewport);resize();
 const views={iso:[1.55,.88,1.85],side:[2.5,.55,0],top:[0,2.5,.0001],front:[0,.55,2.5]};
@@ -112,13 +140,12 @@ loader.load('./reformer.glb',gltf=>{
  model.updateMatrixWorld(true);
  modelBox.setFromObject(model);modelBox.getCenter(center);radius=modelBox.getBoundingSphere(new THREE.Sphere()).radius;
  // The CAD-derived GLB stores only four flat vertex-color groups.
- // Instead of trying to preserve raw CAD colors, map each dominant color
- // to a more realistic product material while preserving the geometry.
+ // Map each dominant color to a more realistic product material.
  const palette=[
-  {name:'hardware', rgb:[153,158,157], material:()=>new THREE.MeshStandardMaterial({color:'#b5b8b7', roughness:0.42, metalness:0.78})},
-  {name:'upholstery', rgb:[101,105,103], material:()=>new THREE.MeshStandardMaterial({color:'#4e5251', roughness:0.94, metalness:0.02})},
-  {name:'wood', rgb:[184,137,85], material:()=>new THREE.MeshPhysicalMaterial({color:'#b88757', roughness:0.68, metalness:0.0, clearcoat:0.18, clearcoatRoughness:0.72})},
-  {name:'rubber', rgb:[53,56,55], material:()=>new THREE.MeshStandardMaterial({color:'#2f3231', roughness:0.96, metalness:0.0})}
+  {name:'hardware', rgb:[153,158,157], material:()=>new THREE.MeshPhysicalMaterial({color:'#c7c7c3', roughness:0.34, metalness:0.96, clearcoat:0.06, clearcoatRoughness:0.18})},
+  {name:'upholstery', rgb:[101,105,103], material:()=>new THREE.MeshPhysicalMaterial({color:'#2e3135', roughness:0.92, metalness:0.02, sheen:0.45, sheenColor:'#565a60', sheenRoughness:0.8})},
+  {name:'wood', rgb:[184,137,85], material:()=>new THREE.MeshPhysicalMaterial({color:'#d6ab7e', roughness:0.72, metalness:0.0, clearcoat:0.12, clearcoatRoughness:0.78})},
+  {name:'rubber', rgb:[53,56,55], material:()=>new THREE.MeshStandardMaterial({color:'#181a1b', roughness:0.98, metalness:0.0})}
  ];
  const cache=new Map();
  const nearestMaterial=(rgb)=>{
@@ -140,31 +167,20 @@ loader.load('./reformer.glb',gltf=>{
    return [r/n,g/n,b/n];
  };
  model.traverse(o=>{if(o.isMesh){
+  if(o.geometry && !o.geometry.getAttribute('normal')){o.geometry.computeVertexNormals();}
   const colors=o.geometry?.getAttribute('color');
   let chosenMat=null;
-  if(colors){
-   chosenMat=nearestMaterial(avgVertexColor(colors));
-  }
-  if(chosenMat){
-    o.material=chosenMat;
-  } else {
-    const mats=Array.isArray(o.material)?o.material:[o.material];
-    for(const mat of mats){
-      mat.color?.set('#b88757');
-      if('roughness' in mat) mat.roughness=.75;
-      if('metalness' in mat) mat.metalness=.02;
-      mat.transparent=false; mat.opacity=1; mat.depthWrite=true; mat.depthTest=true;
-      mat.side=THREE.DoubleSide;
-      mat.needsUpdate=true;
-    }
-  }
+  if(colors){ chosenMat=nearestMaterial(avgVertexColor(colors)); }
+  if(chosenMat){ o.material=chosenMat; }
   if(Array.isArray(o.material)){
     o.material.forEach(mat=>{mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.depthTest=true;mat.side=THREE.DoubleSide;mat.needsUpdate=true;});
   } else if(o.material){
     o.material.transparent=false;o.material.opacity=1;o.material.depthWrite=true;o.material.depthTest=true;o.material.side=THREE.DoubleSide;o.material.needsUpdate=true;
   }
  }});
- setView('iso');done();
+ const size3=modelBox.getSize(new THREE.Vector3());
+ ensureShadow(Math.max(size3.x,size3.z),Math.max(size3.x,size3.z),modelBox.min.y);
+setView('iso');done();
 },event=>{if(event.total){const pct=Math.min(100,Math.round(100*event.loaded/event.total));document.getElementById('progress').style.width=pct+'%';document.getElementById('status').textContent=pct+'% loaded';}},e=>{console.error(e);document.getElementById('loading').style.display='none';document.getElementById('error').style.display='flex';});
 controls.addEventListener('start',()=>{userAdjustedCamera=true});
 for(const btn of document.querySelectorAll('[data-view]'))btn.addEventListener('click',()=>setView(btn.dataset.view));
